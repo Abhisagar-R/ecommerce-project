@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="index.html">Shop</a>
+
+  <div class="ml-auto">
+    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
+
+    <a href="cart.html" class="btn btn-outline-primary">
+      Cart (<span id="count">0</span>)
+    </a>
+  </div>
+</nav>
+
+<!-- PRODUCTS -->
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Products</h2>
+
+  <div class="row" id="product-list"></div>
+</div>
+
+<!-- JS FILES -->
+<script src="assets/js/products.js"></script>
+<script src="assets/js/cart.js"></script>
+
+<!-- RENDER PRODUCTS -->
+<script>
+const container = document.getElementById("product-list");
+
+products.forEach(p => {
+  container.innerHTML += `
+    <div class="col-md-4 mb-4 d-flex">
+      <div class="card w-100 text-center shadow">
+        <img src="${p.image}" class="card-img-top p-3" style="height:250px; object-fit:contain;">
+        <div class="card-body">
+          <h5>${p.name}</h5>
+          <p>₹${p.price}</p>
+          <button onclick="addToCart(${p.id})" class="btn btn-primary">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+});
+</script>
+
+<script>
+function updateCartCount() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.getElementById("count").innerText = total;
+}
+
+updateCartCount();
+</script>
+</body>
+</html>

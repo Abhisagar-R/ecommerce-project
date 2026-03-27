@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product View</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="index.html">Shop</a>
+
+  <div>
+    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
+    <a href="products.html" class="btn btn-outline-primary mr-2">Products</a>
+    <a href="cart.html" class="btn btn-outline-primary">
+      Cart (<span id="count">0</span>)
+    </a>
+  </div>
+</nav>
+<div class="container mt-5">
+  <div class="row align-items-center">
+
+    <div class="col-md-6 text-center">
+      <img id="product-img" class="img-fluid" style="max-height:350px;">
+    </div>
+
+    <div class="col-md-6">
+      <h2 id="product-name"></h2>
+      <h4 class="text-success" id="product-price"></h4>
+      <p id="product-desc"></p>
+        <p id="msg" class="text-success"></p>
+
+      <button onclick="addToCart()" class="btn btn-primary">Add to Cart</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const products = [
+  {
+    id: 1,
+    name: "Green Hoodie",
+    price: 400,
+    image: "assets/images/product1.png",
+    desc: "Premium cotton hoodie, comfortable and stylish."
+  },
+  {
+    id: 2,
+    name: "Blue Jacket",
+    price: 500,
+    image: "assets/images/product2.png",
+    desc: "Warm and trendy jacket for winter."
+  },
+  {
+    id: 3,
+    name: "Denim Shirt",
+    price: 600,
+    image: "assets/images/product3.png",
+    desc: "Classic denim shirt for casual wear."
+  },
+  {
+    id: 4,
+    name: "Black T-Shirt",
+    price: 300,
+    image: "assets/images/product4.png",
+    desc: "Simple and comfortable everyday t-shirt."
+  },
+  {
+    id: 5,
+    name: "White Sneakers",
+    price: 800,
+    image: "assets/images/product5.png",
+    desc: "Stylish sneakers for daily use."
+  },
+  {
+    id: 6,
+    name: "Cap",
+    price: 200,
+    image: "assets/images/product6.png",
+    desc: "Trendy cap to complete your look."
+  },
+  {
+    id: 7,
+    name: "Leather Jacket",
+    price: 1200,
+    image: "assets/images/product7.png",
+    desc: "Premium leather jacket."
+  },
+  {
+    id: 8,
+    name: "Sports Shoes",
+    price: 900,
+    image: "assets/images/product8.png",
+    desc: "Perfect for running and workouts."
+  },
+  {
+    id: 9,
+    name: "Backpack",
+    price: 700,
+    image: "assets/images/product9.png",
+    desc: "Durable and spacious backpack."
+  }
+];
+
+// GET ID FROM URL
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get("id"));
+
+// FIND PRODUCT
+const product = products.find(p => p.id === id);
+
+// DISPLAY DATA
+document.getElementById("product-img").src = product.image;
+document.getElementById("product-name").innerText = product.name;
+document.getElementById("product-price").innerText = "₹" + product.price;
+document.getElementById("product-desc").innerText = product.desc;
+</script>
+<script>
+function addToCart() {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get("id"));
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const product = products.find(p => p.id === id);
+
+  const existing = cart.find(item => item.id === id);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  document.getElementById("msg").innerText = "✔ Product added to cart!";
+
+  setTimeout(() => {
+  document.getElementById("msg").innerText = "";
+  }, 2000);
+  
+  updateCartCount();
+  
+  console.log("Added to cart");
+}
+</script>
+<script>
+function updateCartCount() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.getElementById("count").innerText = total;
+}
+
+updateCartCount();
+</script>
+</body>
+</html>

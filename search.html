@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="index.html">Shop</a>
+  <a href="cart.html" class="btn btn-outline-primary">
+  Cart (<span id="count">0</span>)
+</a>
+  <div>
+    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
+    <a href="products.html" class="btn btn-outline-primary mr-2">Products</a>
+    <a href="cart.html" class="btn btn-outline-primary">Cart</a>
+  </div>
+</nav>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Search Products</h2>
+
+  <!-- SEARCH INPUT -->
+  <input type="text" id="search" class="form-control mb-4" placeholder="Search products...">
+
+  <!-- RESULTS -->
+  <div class="row" id="results"></div>
+</div>
+
+<script>
+const products = [
+  { id: 1, name: "Green Hoodie", price: 400, image: "assets/images/product1.png" },
+  { id: 2, name: "Blue Jacket", price: 500, image: "assets/images/product2.png" },
+  { id: 3, name: "Denim Shirt", price: 600, image: "assets/images/product3.png" },
+  { id: 4, name: "Black T-Shirt", price: 300, image: "assets/images/product4.png" },
+  { id: 5, name: "White Sneakers", price: 800, image: "assets/images/product5.png" },
+  { id: 6, name: "Cap", price: 200, image: "assets/images/product6.png" },
+  { id: 7, name: "Leather Jacket", price: 1200, image: "assets/images/product7.png" },
+  { id: 8, name: "Sports Shoes", price: 900, image: "assets/images/product8.png" },
+  { id: 9, name: "Backpack", price: 700, image: "assets/images/product9.png" }
+];
+
+const input = document.getElementById("search");
+const results = document.getElementById("results");
+
+// DISPLAY FUNCTION
+function display(data) {
+  results.innerHTML = "";
+
+  data.forEach(p => {
+    results.innerHTML += `
+      <div class="col-md-4 mb-4">
+        <div class="card text-center shadow">
+          <img src="${p.image}" class="card-img-top p-3" style="height:200px; object-fit:contain;">
+          <div class="card-body">
+            <h5>${p.name}</h5>
+            <p>₹${p.price}</p>
+            <a href="product_view.html?id=${p.id}" class="btn btn-primary">View</a>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// INITIAL LOAD
+display(products);
+
+// SEARCH FUNCTION
+input.addEventListener("keyup", () => {
+  const value = input.value.toLowerCase();
+
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(value)
+  );
+
+  display(filtered);
+});
+</script>
+<script>
+function updateCartCount() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.getElementById("count").innerText = total;
+}
+
+updateCartCount();
+</script>
+</body>
+</html>

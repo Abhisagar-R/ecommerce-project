@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+  <!-- HEADER WITH HOME BUTTON -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Checkout</h2>
+    <a href="index.html" class="btn btn-outline-primary">🏠 Home</a>
+  </div>
+
+  <!-- ERROR MESSAGE -->
+  <p id="error" class="text-danger text-center"></p>
+
+  <!-- FORM -->
+  <form id="checkout-form">
+    <input type="text" id="name" class="form-control mb-3" placeholder="Full Name">
+    <input type="email" id="email" class="form-control mb-3" placeholder="Email">
+    <input type="text" id="address" class="form-control mb-3" placeholder="Address">
+
+   <button id="checkout-btn" class="btn btn-success btn-block">
+    Place Order
+  </button>
+  </form>
+
+</div>
+
+<script src="assets/js/checkout.js"></script>
+
+</body>
+</html>
