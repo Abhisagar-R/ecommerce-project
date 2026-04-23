@@ -10,37 +10,150 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="index.html">Shop</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
 
-  <div class="ml-auto">
-    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
-    <a href="products.html" class="btn btn-outline-primary">Products</a>
+  <div class="container">
+
+    <!-- LEFT: LOGO -->
+    <div class="col-md-3">
+      <a class="navbar-brand font-weight-bold" href="index.html">
+        THE FASHION STORE
+      </a>
+    </div>
+
+    <!-- CENTER MENU -->
+    <div class="col-md-6 text-center">
+      <ul class="navbar-nav d-inline-flex">
+        <li class="nav-item mx-2"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="products.html">Products</a></li>
+  <li class="nav-item dropdown mx-2">
+  <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" data-toggle="dropdown">
+    Category
+  </a>
+
+  <div class="dropdown-menu text-center">
+    <a class="dropdown-item" href="products.html?category=Clothing">Clothing</a>
+    <a class="dropdown-item" href="products.html?category=Shoes">Shoes</a>
+    <a class="dropdown-item" href="products.html?category=Accessories">Accessories</a>
   </div>
-</nav>
+  </li>        <li class="nav-item mx-2"><a class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
 
-<!-- CART CONTENT -->
-<div class="container mt-5">
-  <h2 class="text-center">Cart</h2>
+    <!-- RIGHT SIDE -->
+    <div class="col-md-3 text-right">
+      <a href="search.html" class="btn btn-outline-primary mr-2">Search</a>
+      <!-- <a href="cart.html" class="btn btn-outline-primary">
+        🛒 (<span id="count">0</span>)
+      </a> -->
+    </div>
 
-  <!-- JS WILL LOAD ITEMS HERE -->
-  <div id="cart-items"></div>
-
-  <hr>
-
-    <h4>Total: <span id="total">0</span></h4>
-
-  <a href="checkout.html" class="btn btn-success mt-3">Checkout</a>
+  </div>
+<div class="cart-wrapper">
+  <a href="cart.html" class="btn btn-outline-primary">
+    Cart (<span id="count">0</span>)
+  </a>
+  <div class="mini-cart" id="mini-cart"></div>
 </div>
 
+</nav>
+
+
+<!-- CART SECTION -->
+<div class="container-fluid mt-5">
+  <div class="cart-bg mx-auto" style="max-width:1200px;">
+<h2 class="text-center mb-4 text-white">
+  Cart (<span id="cart-count-title">0</span> items)
+</h2>
+
+  <div class="row">
+
+    <!-- LEFT -->
+    <div class="col-md-8" id="cart-items"></div>
+
+    <!-- RIGHT -->
+    <div class="col-md-4">
+      <div class="summary-box shadow-lg">
+
+        <h5 class="mb-3">Order Summary</h5>
+
+        <div id="summary"></div>
+
+        <hr>
+
+        <p>Subtotal: <span id="subtotal">₹0</span></p>
+        <p>Tax (5%): <span id="tax">₹0</span></p>
+        <p>Discount: <span id="discount">₹0</span></p>
+
+        <h4 class="font-weight-bold">Total: <span id="grand-total">₹0</span></h4>
+
+        <input type="text" id="coupon" class="form-control mt-2" placeholder="Enter coupon">
+
+        <button onclick="applyCoupon()" class="btn btn-outline-primary btn-sm mt-2 w-100">
+          Apply Coupon
+        </button>
+
+      <button onclick="goToCheckout()" class="btn checkout-btn btn-block mt-3">
+      Go to Checkout
+      </button>
+
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast-custom"></div>
+
+<div id="footer-container"></div>
 <!-- JS FILES -->
 <script src="assets/js/products.js"></script>
 <script src="assets/js/cart.js"></script>
 
+
+<!-- <script>
+fetch("footer.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+
+    const topBtn = document.getElementById("topBtn");
+
+    window.onscroll = function () {
+      topBtn.style.display =
+        document.documentElement.scrollTop > 200 ? "block" : "none";
+    };
+
+    topBtn.onclick = () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+  });
+
+// ✅ Newsletter function (OUTSIDE fetch)
+function subscribe() {
+  const email = document.getElementById("newsletterEmail").value;
+  const msg = document.getElementById("subscribeMsg");
+
+  if (!email.includes("@")) {
+    msg.innerText = "Enter valid email";
+    msg.style.color = "yellow";
+    return;
+  }
+
+  msg.innerText = "Subscribed successfully ✔️";
+  msg.style.color = "lightgreen";
+}
+</script> -->
+
+
+<script src="assets/js/common.js"></script>
 </body>
 </html>

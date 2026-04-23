@@ -5,161 +5,141 @@
   <title>Product View</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
 
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="index.html">Shop</a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+  <a class="navbar-brand font-weight-bold" href="index.html">
+    THE FASHION STORE
+  </a>
 
-  <div>
+  <div class="ml-auto d-flex align-items-center">
     <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
     <a href="products.html" class="btn btn-outline-primary mr-2">Products</a>
-    <a href="cart.html" class="btn btn-outline-primary">
-      Cart (<span id="count">0</span>)
-    </a>
+
+    <div class="cart-wrapper">
+      <a href="cart.html" class="btn btn-outline-primary">
+        Cart (<span id="count">0</span>)
+      </a>
+      <div class="mini-cart" id="mini-cart"></div>
+    </div>
   </div>
 </nav>
+
+<!-- PRODUCT -->
 <div class="container mt-5">
-  <div class="row align-items-center">
+  <div class="row">
 
     <div class="col-md-6 text-center">
-      <img id="product-img" class="img-fluid" style="max-height:350px;">
+      <img id="product-img" class="img-fluid" style="max-height:400px;">
     </div>
 
     <div class="col-md-6">
-      <h2 id="product-name"></h2>
+      <h3 id="product-name"></h3>
+      <span class="badge badge-info mb-2" id="product-category"></span>
       <h4 class="text-success" id="product-price"></h4>
       <p id="product-desc"></p>
-        <p id="msg" class="text-success"></p>
 
-      <button onclick="addToCart()" class="btn btn-primary">Add to Cart</button>
+      <div class="mb-3">
+        <label>Quantity</label>
+        <input type="number" id="qty" value="1" min="1" class="form-control" style="width:100px;">
+      </div>
+
+      <button onclick="addToCartWithAnimation()" class="btn btn-primary">
+        Add to Cart
+      </button>
     </div>
 
   </div>
 </div>
 
-<script>
-const products = [
-  {
-    id: 1,
-    name: "Green Hoodie",
-    price: 400,
-    image: "assets/images/product1.png",
-    desc: "Premium cotton hoodie, comfortable and stylish."
-  },
-  {
-    id: 2,
-    name: "Blue Jacket",
-    price: 500,
-    image: "assets/images/product2.png",
-    desc: "Warm and trendy jacket for winter."
-  },
-  {
-    id: 3,
-    name: "Denim Shirt",
-    price: 600,
-    image: "assets/images/product3.png",
-    desc: "Classic denim shirt for casual wear."
-  },
-  {
-    id: 4,
-    name: "Black T-Shirt",
-    price: 300,
-    image: "assets/images/product4.png",
-    desc: "Simple and comfortable everyday t-shirt."
-  },
-  {
-    id: 5,
-    name: "White Sneakers",
-    price: 800,
-    image: "assets/images/product5.png",
-    desc: "Stylish sneakers for daily use."
-  },
-  {
-    id: 6,
-    name: "Cap",
-    price: 200,
-    image: "assets/images/product6.png",
-    desc: "Trendy cap to complete your look."
-  },
-  {
-    id: 7,
-    name: "Leather Jacket",
-    price: 1200,
-    image: "assets/images/product7.png",
-    desc: "Premium leather jacket."
-  },
-  {
-    id: 8,
-    name: "Sports Shoes",
-    price: 900,
-    image: "assets/images/product8.png",
-    desc: "Perfect for running and workouts."
-  },
-  {
-    id: 9,
-    name: "Backpack",
-    price: 700,
-    image: "assets/images/product9.png",
-    desc: "Durable and spacious backpack."
-  }
-];
+<!-- RELATED -->
+<div class="container mt-5">
+  <h4 class="mb-4">Related Products</h4>
+  <div class="related-scroll" id="related-products"></div>
+</div>
 
-// GET ID FROM URL
+<!-- JS -->
+<script src="assets/js/products.js"></script>
+<script src="assets/js/cart.js"></script>
+
+<script>
+// LOAD PRODUCT
 const params = new URLSearchParams(window.location.search);
 const id = parseInt(params.get("id"));
 
-// FIND PRODUCT
-const product = products.find(p => p.id === id);
+const product = products.find(p => p.id == id);
 
-// DISPLAY DATA
-document.getElementById("product-img").src = product.image;
-document.getElementById("product-name").innerText = product.name;
-document.getElementById("product-price").innerText = "₹" + product.price;
-document.getElementById("product-desc").innerText = product.desc;
-</script>
-<script>
-function addToCart() {
-  const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get("id"));
+if (product) {
+  document.getElementById("product-img").src = product.image;
+  document.getElementById("product-name").innerText = product.name;
+  document.getElementById("product-price").innerText = "₹" + product.price;
+  document.getElementById("product-desc").innerText = product.desc;
+  document.getElementById("product-category").innerText = product.category;
+}
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// ADD TO CART + ANIMATION
+function addToCartWithAnimation() {
+  const qty = parseInt(document.getElementById("qty").value);
 
-  const product = products.find(p => p.id === id);
+  const img = document.getElementById("product-img");
+  const cartBtn = document.querySelector(".cart-wrapper a");
 
-  const existing = cart.find(item => item.id === id);
+  // clone image
+  const clone = img.cloneNode(true);
+  clone.style.position = "absolute";
+  clone.style.top = img.getBoundingClientRect().top + "px";
+  clone.style.left = img.getBoundingClientRect().left + "px";
+  clone.style.width = "200px";
+  clone.style.zIndex = "9999";
+  clone.style.transition = "all 0.8s ease";
 
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  document.getElementById("msg").innerText = "✔ Product added to cart!";
+  document.body.appendChild(clone);
 
   setTimeout(() => {
-  document.getElementById("msg").innerText = "";
-  }, 2000);
-  
-  updateCartCount();
-  
-  console.log("Added to cart");
-}
-</script>
-<script>
-function updateCartCount() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById("count").innerText = total;
+    clone.style.top = cartBtn.getBoundingClientRect().top + "px";
+    clone.style.left = cartBtn.getBoundingClientRect().left + "px";
+    clone.style.width = "20px";
+    clone.style.opacity = "0.5";
+  }, 50);
+
+  setTimeout(() => clone.remove(), 800);
+
+  // ADD TO CART
+  addToCart(id, qty);
 }
 
-updateCartCount();
+// RELATED PRODUCTS
+function showRelatedProducts() {
+  const container = document.getElementById("related-products");
+
+  const related = products.filter(p => 
+    p.category === product.category && p.id !== product.id
+  );
+
+  related.forEach(p => {
+    container.innerHTML += `
+      <div class="card text-center shadow m-2" style="min-width:200px;">
+        <img src="${p.image}" class="card-img-top p-3" style="height:150px; object-fit:contain;">
+        <div class="card-body">
+          <h6>${p.name}</h6>
+          <p>₹${p.price}</p>
+          <a href="product_view.html?id=${p.id}" class="btn btn-primary btn-sm">View</a>
+        </div>
+      </div>
+    `;
+  });
+}
+
+showRelatedProducts();
 </script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- FOOTER -->
+<div id="footer-container"></div>
+<script src="assets/js/common.js"></script>
+
 </body>
 </html>

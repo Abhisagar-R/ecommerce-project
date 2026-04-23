@@ -10,67 +10,208 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="index.html">Shop</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
 
-  <div class="ml-auto">
-    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
+  <div class="container">
 
-    <a href="cart.html" class="btn btn-outline-primary">
-      Cart (<span id="count">0</span>)
-    </a>
+    <!-- LEFT: LOGO -->
+    <div class="col-md-3">
+      <a class="navbar-brand font-weight-bold" href="index.html">
+        THE FASHION STORE
+      </a>
+    </div>
+
+    <!-- CENTER MENU -->
+    <div class="col-md-6 text-center">
+      <ul class="navbar-nav d-inline-flex">
+        <li class="nav-item mx-2"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="products.html">Products</a></li>
+  <li class="nav-item dropdown mx-2">
+  <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" data-toggle="dropdown">
+    Category
+  </a>
+
+  <div class="dropdown-menu text-center">
+    <a class="dropdown-item" href="products.html?category=Clothing">Clothing</a>
+    <a class="dropdown-item" href="products.html?category=Shoes">Shoes</a>
+    <a class="dropdown-item" href="products.html?category=Accessories">Accessories</a>
   </div>
+  </li>        <li class="nav-item mx-2"><a class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="col-md-3 text-right">
+      <a href="search.html" class="btn btn-outline-primary mr-2">Search</a>
+      <!-- <a href="cart.html" class="btn btn-outline-primary">
+        🛒 (<span id="count">0</span>)
+      </a> -->
+    </div>
+
+  </div>
+<div class="cart-wrapper">
+  <a href="cart.html" class="btn btn-outline-primary">
+    Cart (<span id="count">0</span>)
+  </a>
+  <div class="mini-cart" id="mini-cart"></div>
+</div>
+
 </nav>
+
 
 <!-- PRODUCTS -->
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Products</h2>
+  <div class="row">
 
-  <div class="row" id="product-list"></div>
+    <!-- LEFT SIDEBAR -->
+    <div class="col-md-3">
+      <h5>Filters</h5>
+
+      <h6 class="mt-3">Category</h6>
+      <ul class="list-group" id="categoryList">
+        <li class="list-group-item" onclick="setCategory('All')">All</li>
+        <li class="list-group-item" onclick="setCategory('Clothing')">Clothing</li>
+        <li class="list-group-item" onclick="setCategory('Shoes')">Shoes</li>
+        <li class="list-group-item" onclick="setCategory('Accessories')">Accessories</li>
+      </ul>
+
+      <h6 class="mt-4">Price</h6>
+      <input type="range" class="custom-range" min="100" max="1000" id="priceRange">
+      <p id="priceValue">₹100 - ₹1000</p>
+    </div>
+
+    <!-- RIGHT PRODUCTS -->
+    <div class="col-md-9">
+      <h2 class="text-center mb-4">Products</h2>
+      <div class="row" id="product-list"></div>
+    </div>
+
+  </div>
 </div>
 
-<!-- JS FILES -->
+<!-- YOUR JS FILES -->
 <script src="assets/js/products.js"></script>
 <script src="assets/js/cart.js"></script>
+
+
 
 <!-- RENDER PRODUCTS -->
 <script>
 const container = document.getElementById("product-list");
 
-products.forEach(p => {
-  container.innerHTML += `
-    <div class="col-md-4 mb-4 d-flex">
-      <div class="card w-100 text-center shadow">
-        <img src="${p.image}" class="card-img-top p-3" style="height:250px; object-fit:contain;">
-        <div class="card-body">
-          <h5>${p.name}</h5>
-          <p>₹${p.price}</p>
-          <button onclick="addToCart(${p.id})" class="btn btn-primary">
-            Add to Cart
-          </button>
+let selectedCategory = "All";
+let selectedPrice = 1000;
+
+
+function renderProducts() {
+  container.innerHTML = "";
+
+  let filtered = products.filter(p => {
+    return (
+      (selectedCategory === "All" || p.category === selectedCategory) &&
+      p.price <= selectedPrice
+    );
+  });
+
+  filtered.forEach(p => {
+    container.innerHTML += `
+      <div class="col-md-4 mb-4 d-flex">
+        <div class="card w-100 text-center shadow">
+          <img src="${p.image}" class="card-img-top p-3" style="height:250px; object-fit:contain;">
+          <div class="card-body">
+            <h5>${p.name}</h5>
+            <p>₹${p.price}</p>
+            <button onclick="addToCart(${p.id})" class="btn btn-primary">
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  `;
-});
-</script>
-
-<script>
-function updateCartCount() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById("count").innerText = total;
+    `;
+  });
 }
 
-updateCartCount();
+
+function setCategory(category) {
+  selectedCategory = category;
+  renderProducts();
+}
+const params = new URLSearchParams(window.location.search);
+const urlCategory = params.get("category");
+
+if (urlCategory) {
+  selectedCategory = urlCategory;
+}
+
+document.getElementById("priceRange").addEventListener("input", function () {
+  selectedPrice = parseInt(this.value);
+  document.getElementById("priceValue").innerText = "₹100 - ₹" + selectedPrice;
+  renderProducts();
+});
+
+
+renderProducts();
 </script>
+
+<!-- <script>
+
+  function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById("count").innerText = total;
+  }
+
+updateCartCount();
+</script> -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+<div id="toast" class="toast-custom"></div>
+
+<div id="footer-container"></div>
+
+<!-- <script>
+fetch("footer.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+
+    const topBtn = document.getElementById("topBtn");
+
+    window.onscroll = function () {
+      topBtn.style.display =
+        document.documentElement.scrollTop > 200 ? "block" : "none";
+    };
+
+    topBtn.onclick = () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+  });
+
+// ✅ Newsletter function (OUTSIDE fetch)
+function subscribe() {
+  const email = document.getElementById("newsletterEmail").value;
+  const msg = document.getElementById("subscribeMsg");
+
+  if (!email.includes("@")) {
+    msg.innerText = "Enter valid email";
+    msg.style.color = "yellow";
+    return;
+  }
+
+  msg.innerText = "Subscribed successfully ✔️";
+  msg.style.color = "lightgreen";
+}
+</script> -->
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/cart.js"></script></body>
+<script src="assets/js/common.js"></script>
 </html>

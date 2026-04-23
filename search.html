@@ -4,52 +4,97 @@
   <meta charset="UTF-8">
   <title>Search</title>
 
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
 
-  <!-- NAVBAR -->
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="index.html">Shop</a>
-  <a href="cart.html" class="btn btn-outline-primary">
-  Cart (<span id="count">0</span>)
-</a>
-  <div>
-    <a href="index.html" class="btn btn-outline-primary mr-2">Home</a>
-    <a href="products.html" class="btn btn-outline-primary mr-2">Products</a>
-    <a href="cart.html" class="btn btn-outline-primary">Cart</a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+
+  <div class="container">
+
+    <!-- LEFT: LOGO -->
+    <div class="col-md-3">
+      <a class="navbar-brand font-weight-bold" href="index.html">
+        THE FASHION STORE
+      </a>
+    </div>
+
+    <!-- CENTER MENU -->
+    <div class="col-md-6 text-center">
+      <ul class="navbar-nav d-inline-flex">
+        <li class="nav-item mx-2"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="products.html">Products</a></li>
+  <li class="nav-item dropdown mx-2">
+  <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" data-toggle="dropdown">
+    Category
+  </a>
+
+  <div class="dropdown-menu text-center">
+    <a class="dropdown-item" href="products.html?category=Clothing">Clothing</a>
+    <a class="dropdown-item" href="products.html?category=Shoes">Shoes</a>
+    <a class="dropdown-item" href="products.html?category=Accessories">Accessories</a>
   </div>
+  </li>        <li class="nav-item mx-2"><a class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item mx-2"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="col-md-3 text-right">
+      <a href="search.html" class="btn btn-outline-primary mr-2">Search</a>
+      <!-- <a href="cart.html" class="btn btn-outline-primary">
+        🛒 (<span id="count">0</span>)
+      </a> -->
+    </div>
+
+  </div>
+<div class="cart-wrapper">
+  <a href="cart.html" class="btn btn-outline-primary">
+    Cart (<span id="count">0</span>)
+  </a>
+  <div class="mini-cart" id="mini-cart"></div>
+</div>
+
 </nav>
+
+
+<!-- SEARCH SECTION -->
 <div class="container mt-5">
   <h2 class="text-center mb-4">Search Products</h2>
 
-  <!-- SEARCH INPUT -->
-  <input type="text" id="search" class="form-control mb-4" placeholder="Search products...">
+  <input 
+    type="text" 
+    id="search" 
+    class="form-control mb-4" 
+    placeholder="Search products..."
+  >
 
-  <!-- RESULTS -->
   <div class="row" id="results"></div>
 </div>
 
-<script>
-const products = [
-  { id: 1, name: "Green Hoodie", price: 400, image: "assets/images/product1.png" },
-  { id: 2, name: "Blue Jacket", price: 500, image: "assets/images/product2.png" },
-  { id: 3, name: "Denim Shirt", price: 600, image: "assets/images/product3.png" },
-  { id: 4, name: "Black T-Shirt", price: 300, image: "assets/images/product4.png" },
-  { id: 5, name: "White Sneakers", price: 800, image: "assets/images/product5.png" },
-  { id: 6, name: "Cap", price: 200, image: "assets/images/product6.png" },
-  { id: 7, name: "Leather Jacket", price: 1200, image: "assets/images/product7.png" },
-  { id: 8, name: "Sports Shoes", price: 900, image: "assets/images/product8.png" },
-  { id: 9, name: "Backpack", price: 700, image: "assets/images/product9.png" }
-];
+<!-- JS FILES -->
+<script src="assets/js/products.js"></script>
+<script src="assets/js/cart.js"></script>
 
+<!-- SEARCH LOGIC -->
+<script>
 const input = document.getElementById("search");
 const results = document.getElementById("results");
 
-// DISPLAY FUNCTION
+// DISPLAY PRODUCTS
 function display(data) {
   results.innerHTML = "";
+
+  if (data.length === 0) {
+    results.innerHTML = "<p class='text-center w-100'>No products found ❌</p>";
+    return;
+  }
 
   data.forEach(p => {
     results.innerHTML += `
@@ -59,7 +104,12 @@ function display(data) {
           <div class="card-body">
             <h5>${p.name}</h5>
             <p>₹${p.price}</p>
-            <a href="product_view.html?id=${p.id}" class="btn btn-primary">View</a>
+            <button onclick="addToCart(${p.id})" class="btn btn-primary btn-sm">
+              Add to Cart
+            </button>
+            <a href="product_view.html?id=${p.id}" class="btn btn-outline-primary btn-sm mt-2">
+              View
+            </a>
           </div>
         </div>
       </div>
@@ -71,24 +121,27 @@ function display(data) {
 display(products);
 
 // SEARCH FUNCTION
+let timer;
+
 input.addEventListener("keyup", () => {
-  const value = input.value.toLowerCase();
+  clearTimeout(timer);
 
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(value)
-  );
+  timer = setTimeout(() => {
+    const value = input.value.toLowerCase();
 
-  display(filtered);
+    const filtered = products.filter(p =>
+      p.name.toLowerCase().includes(value)
+    );
+
+    display(filtered);
+  }, 300);
 });
 </script>
-<script>
-function updateCartCount() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let total = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById("count").innerText = total;
-}
 
-updateCartCount();
-</script>
+<!-- FOOTER -->
+<div id="footer-container"></div>
+
+
+<script src="assets/js/common.js"></script>
 </body>
 </html>
